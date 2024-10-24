@@ -14,14 +14,19 @@ $app = AppFactory::create();
 $app->get('/hello/{name}', function (Request $request, Response $response, array $args) 
 {
     $name = $args['name'];
-    $response->getBody()->write("Hello, $name, ".phpinfo()."");
-
-    $user = new User("zoro", "nan");
+    $response->getBody()->write("Hello, $name");
 
     return $response;
 });
 
-$app->get('/addUser', function (Request $request, Response $response, array $args) 
+$app->get('/phpinfo', function (Request $request, Response $response, array $args) 
+{
+    $response->getBody()->write(phpinfo());
+
+    return $response;
+});
+
+$app->get('/addUserGet', function (Request $request, Response $response, array $args) 
 {
     $params = $request->getQueryParams();
     $username = $params['username'];
@@ -31,6 +36,18 @@ $app->get('/addUser', function (Request $request, Response $response, array $arg
     $user->add_in_db();
     $response->getBody()->write("Hello user, $user->username with $user->password");
     
+    return $response;
+});
+
+$app->post('/addUser', function (Request $request, Response $response, array $args)
+{
+    $params = $request->getParsedBody();
+    $username = $params['username'];
+    $password = $params['password'];
+    
+    $user = new User($username, $password);
+    $is_added = $user->add_in_db();
+
     return $response;
 });
 
