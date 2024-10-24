@@ -48,6 +48,36 @@ $app->post('/addUser', function (Request $request, Response $response, array $ar
     $user = new User($username, $password);
     $is_added = $user->add_in_db();
 
+    $json = "";
+    $data = [];
+    if($is_added)
+    {
+        $data = [
+            'success' => true,
+            'message' => "User added successfully $user->username",
+        ];
+
+        $json = json_encode($data);
+
+        $response = $response->withHeader('Content-Type', 'application/json')
+                             ->withStatus(200);
+
+        $response->getBody()->write($json);
+    }else
+    {
+        $data = [
+            'success' => false,
+            'message' => "$user->username already existing",
+        ];
+
+        $json = json_encode($data);
+
+        $response = $response->withHeader('Content-Type', 'application/json')
+                             ->withStatus(200);
+
+        $response->getBody()->write($json);
+    }
+
     return $response;
 });
 
