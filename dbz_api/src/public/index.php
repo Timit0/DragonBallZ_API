@@ -11,31 +11,10 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $app = AppFactory::create();
 
-$app->get('/hello/{name}', function (Request $request, Response $response, array $args) 
-{
-    $name = $args['name'];
-    $response->getBody()->write("Hello, $name");
-
-    return $response;
-});
-
 $app->get('/phpinfo', function (Request $request, Response $response, array $args) 
 {
     $response->getBody()->write(phpinfo());
 
-    return $response;
-});
-
-$app->get('/addUserGet', function (Request $request, Response $response, array $args) 
-{
-    $params = $request->getQueryParams();
-    $username = $params['username'];
-    $password = $params['password'];
-    
-    $user = new User($username, $password);
-    $user->add_in_db();
-    $response->getBody()->write("Hello user, $user->username with $user->password");
-    
     return $response;
 });
 
@@ -78,6 +57,48 @@ $app->post('/addUser', function (Request $request, Response $response, array $ar
         $response->getBody()->write($json);
     }
 
+    return $response;
+});
+
+$app->post('/logIn', function (Request $request, Response $response, array $args) 
+{
+    $params = $request->getParsedBody();
+    $username = $params['username'];
+    $password = $params['password'];
+    
+    $user = new User($username, $password);
+    $can_log = $user->can_log();
+    
+    $json = "";
+    $data = [];
+    if($can_log)
+    {
+        $data = [
+            'success' => true,
+            'message' => "Logged successfully",
+        ];
+
+        $json = json_encode($data);
+
+        $response = $response->withHeader('Content-Type', 'application/json')
+                             ->withStatus(200);
+
+        $response->getBody()->write($json);
+    }else
+    {
+        $data = [
+            'success' => false,
+            'message' => "Username or password is wrong",
+        ];
+
+        $json = json_encode($data);
+
+        $response = $response->withHeader('Content-Type', 'application/json')
+                             ->withStatus(200);
+
+        $response->getBody()->write($json);
+    }
+    
     return $response;
 });
 
