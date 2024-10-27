@@ -8,15 +8,14 @@ return function (App $app) {
     
     $app->get('/test_host', function (Request $request, Response $response, array $args) 
     {
-        $params = $request->getQueryParams();
-        $host_username = $params['host_username'];
-
-        $host_user = new User(username: $host_username);
-        $message = $host_user->username;
-        echo "<script type='text/javascript'>alert('$message');</script>";
-        $user = User::get_user_by_name($host_username);
-
-        $response->getBody()->write($user->id);
+        $result = HostServer::get_all_available_host_server();
+        $jsonResult = json_encode($result);
+        $data = [
+            'success' => true,
+            'message' => "Host server deleted successfully",
+            'host_server_list' => $jsonResult,
+        ];
+        $response->getBody()->write(json_encode($data));
 
         return $response;
     });
@@ -72,6 +71,18 @@ return function (App $app) {
                                  ->withStatus(200);
         }
         
+        $response->getBody()->write(json_encode($data));
+        return $response;
+    });
+
+    $app->post('/get_all_available_host_server', function (Request $request, Response $response) {
+        $result = HostServer::get_all_available_host_server();
+        $jsonResult = json_encode($result);
+        $data = [
+            'success' => true,
+            'message' => "Host server deleted successfully",
+            'host_server_list' => $jsonResult,
+        ];
         $response->getBody()->write(json_encode($data));
         return $response;
     });
