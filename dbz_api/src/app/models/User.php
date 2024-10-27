@@ -2,11 +2,13 @@
 // namespace dbz_api;
 class User
 {
+    public string $id;
     public string $username;
     public string $password;
 
-    function __construct($username = "", $password = "")
+    function __construct($id = 0, $username = "", $password = "")
     {
+        $this->id = $id;
         $this->username = $username;
         $this->password = $password;
     }
@@ -27,7 +29,7 @@ class User
             return null;
         }
         
-        return new User($result['username'], $result['password']);
+        return new User(id: $result['id'], username: $result['username'], password: $result['password']);
     }
 
     public function add_in_db() : bool

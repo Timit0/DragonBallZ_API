@@ -1,0 +1,24 @@
+CREATE DATABASE `dbz_database`;
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE `Users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` text NOT NULL,
+  `password` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+CREATE TABLE `HostServers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user_host` int(11) NOT NULL,
+  `id_user_guest` int(11) DEFAULT NULL,
+  `host_ip` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `HostServers_Users_FK` (`id_user_host`),
+  KEY `HostServers_Users_FK_1` (`id_user_guest`),
+  CONSTRAINT `HostServers_Users_FK` FOREIGN KEY (`id_user_host`) REFERENCES `Users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `HostServers_Users_FK_1` FOREIGN KEY (`id_user_guest`) REFERENCES `Users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
