@@ -74,4 +74,65 @@ class HostServer
 
         return $array;
     }
+
+    public static function add_guest_user(string $username_of_guest_to_add, string $username_of_host) : bool
+    {
+        $sql = "UPDATE HostServers
+        SET id_user_guest = :id_user_guest
+        WHERE id_user_host = :id_user_host;";
+
+        $stmt = DB::getInstance()->prepare($sql);
+
+        $user_guest = User::get_user_by_name($username_of_guest_to_add);
+        $user_host = User::get_user_by_name($username_of_host);
+
+        $stmt->bindParam(":id_user_guest", $user_guest->id, PDO::PARAM_INT);
+        $stmt->bindParam(":id_user_host", $user_host->id, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    public static function can_add_guest_user(string $username_of_host) : bool
+    {
+        $sql = "SELECT *, CASE WHEN id_user_guest IS NULL THEN 1 ELSE 0 END AS is_user_guest_null
+        FROM 
+            dbz_database.HostServers hs
+        WHERE 
+            id_user_host = :id_user_host;";
+
+
+        $stmt = DB::getInstance()->prepare($sql);
+
+        $user_host = User::get_user_by_name($username_of_host);
+
+        $stmt->bindParam(":id_user_host", $user_host->id, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        // if ($result && $result['is_user_guest_null'] === 'true') {
+        //     return true;
+        // }
+        return (bool)$result['is_user_guest_null'];
+    }
+
+    public static function test(string $username_of_host)
+    {
+        $sql = "SELECT *, CASE WHEN id_user_guest IS NULL THEN 'true' ELSE 'false' END AS is_user_guest_null
+        FROM 
+            dbz_database.HostServers hs
+        WHERE 
+            id_user_host = :id_user_host;";
+
+
+        $stmt = DB::getInstance()->prepare($sql);
+
+        $user_host = User::get_user_by_name($username_of_host);
+
+        $stmt->bindParam(":id_user_host", $user_host->id, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        return $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

@@ -8,15 +8,27 @@ return function (App $app) {
     
     $app->get('/test_host', function (Request $request, Response $response, array $args) 
     {
-        $result = HostServer::get_all_available_host_server();
-        $jsonResult = json_encode($result);
-        $data = [
-            'success' => true,
-            'message' => "Host server deleted successfully",
-            'host_server_list' => $jsonResult,
-        ];
+        $params = $request->getQueryParams();
+        $host_username = $params['username'];
+        $result = HostServer::can_add_guest_user($host_username);
+        // $result = HostServer::test($host_username)['is_user_guest_null'];
+        
+        $data = [];
+        if($result === true)
+        {
+            $data = [
+                'success' => true,
+                'message' => "Can connect",
+            ];
+        }else
+        {
+            $data = [
+                'success' => false,
+                'message' => "Can't connect",
+            ];
+        }
+        
         $response->getBody()->write(json_encode($data));
-
         return $response;
     });
 
@@ -83,6 +95,45 @@ return function (App $app) {
             'message' => "Host server deleted successfully",
             'host_server_list' => $jsonResult,
         ];
+        $response->getBody()->write(json_encode($data));
+        return $response;
+    });
+
+    $app->post('/add_player_guest_to_host_server', function (Request $request, Response $response) {
+        $params = $request->getParsedBody();
+        $host_username = $params['host_username'];
+        $guest_username = $params['guest_username'];
+
+        $result = HostServer::add_guest_user($guest_username, $host_username);
+        $data = [
+            'success' => true,
+            'message' => "Connected to serv",
+        ];
+        $response->getBody()->write(json_encode($data));
+        return $response;
+    });
+
+    $app->post('/can_add_guest_to_host_server', function (Request $request, Response $response) {
+        $params = $request->getParsedBody();
+        $host_username = $params['username'];
+        //$result = HostServer::can_add_guest_user($host_username);
+        $result = HostServer::can_add_guest_user($host_username);
+        
+        $data = [];
+        if($result === true)
+        {
+            $data = [
+                'success' => true,
+                'message' => "Can connect FDP $host_username",
+            ];
+        }else
+        {
+            $data = [
+                'success' => false,
+                'message' => "Can't connect",
+            ];
+        }
+        
         $response->getBody()->write(json_encode($data));
         return $response;
     });
