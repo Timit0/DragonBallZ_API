@@ -99,6 +99,18 @@ return function (App $app) {
         return $response;
     });
 
+    $app->post('/get_all_host_server', function (Request $request, Response $response) {
+        $result = HostServer::get_all_host_server();
+        $jsonResult = json_encode($result);
+        $data = [
+            'success' => true,
+            'message' => "Host server deleted successfully",
+            'host_server_list' => $jsonResult,
+        ];
+        $response->getBody()->write(json_encode($data));
+        return $response;
+    });
+
     $app->post('/add_player_guest_to_host_server', function (Request $request, Response $response) {
         $params = $request->getParsedBody();
         $host_username = $params['host_username'];

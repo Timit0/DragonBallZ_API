@@ -44,6 +44,43 @@ class HostServer
         return $stmt->execute();
     }
 
+    public static function get_all_host_server() : array
+    {
+        $query = "SELECT 
+            UserHost.username AS host_username,
+            UserGuest.username AS guest_username,
+            H.host_ip 
+            FROM 
+                dbz_database.HostServers AS H
+            JOIN 
+                dbz_database.Users AS UserHost ON H.id_user_host = UserHost.id
+            JOIN 
+                dbz_database.Users AS UserGuest ON H.id_user_guest = UserGuest.id;
+        ";
+
+        $stmt = DB::getInstance()->prepare($query);
+        $stmt->execute();
+
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $array = [];
+        foreach ($results as $result) {
+            $user_host = User::get_user_by_name($result['host_username']);
+            $user_host_without_password = new User(username: $user_host->username);
+
+            $user_guest = User::get_user_by_name($result['guest_username']);
+            $user_guest_without_password = new User(username: $user_guest->username);
+            
+            $array[] = new HostServer(
+                user_host: $user_host_without_password,
+                user_guest: $user_guest_without_password,
+                host_ip: $result['host_ip']
+            );
+        }
+
+        return $array;
+    }
+
     public static function get_all_available_host_server() : array
     {
         $query = "SELECT 
