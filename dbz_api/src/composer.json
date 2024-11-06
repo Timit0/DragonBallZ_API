@@ -4,8 +4,9 @@
         "slim/psr7": "^1.7"
     },
     "autoload": {
-        "psr-4": {
-            "": "app/models"
-        }
+        "classmap": [
+            "app/actions",
+            "app/models"
+        ]
     }
 }

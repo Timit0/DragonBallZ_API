@@ -74,16 +74,15 @@ class ComposerStaticInit6c92140c6cb032ad538ca3e310cd9455
         ),
     );
 
-    public static $fallbackDirsPsr4 = array (
-        0 => __DIR__ . '/../..' . '/app/models',
-    );
-
     public static $classMap = array (
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'DB' => __DIR__ . '/../..' . '/app/models/Db.php',
+        'HostServer' => __DIR__ . '/../..' . '/app/models/HostServer.php',
         'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
+        'User' => __DIR__ . '/../..' . '/app/models/User.php',
         'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
     );
 
@@ -92,7 +91,6 @@ class ComposerStaticInit6c92140c6cb032ad538ca3e310cd9455
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit6c92140c6cb032ad538ca3e310cd9455::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit6c92140c6cb032ad538ca3e310cd9455::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr4 = ComposerStaticInit6c92140c6cb032ad538ca3e310cd9455::$fallbackDirsPsr4;
             $loader->classMap = ComposerStaticInit6c92140c6cb032ad538ca3e310cd9455::$classMap;
 
         }, null, ClassLoader::class);

@@ -11,27 +11,14 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $app = AppFactory::create();
 
-$app->get('/hello/{name}', function (Request $request, Response $response, array $args) 
+$app->get('/phpinfo', function (Request $request, Response $response, array $args) 
 {
-    $name = $args['name'];
-    $response->getBody()->write("Hello, $name, ".phpinfo()."");
-
-    $user = new User("zoro", "nan");
+    $response->getBody()->write(phpinfo());
 
     return $response;
 });
 
-$app->get('/addUser', function (Request $request, Response $response, array $args) 
-{
-    $params = $request->getQueryParams();
-    $username = $params['username'];
-    $password = $params['password'];
-    
-    $user = new User($username, $password);
-    $user->add_in_db();
-    $response->getBody()->write("Hello user, $user->username with $user->password");
-    
-    return $response;
-});
+(require __DIR__ . '/../app/actions/connectionActions.php')($app);
+(require __DIR__ . '/../app/actions/hostServerActions.php')($app);
 
 $app->run();
